@@ -1,0 +1,54 @@
+Regions:
+USA
+Canada
+Japan
+Ireland
+Islay
+Speyside
+Campbeltown
+Highland
+Lowland
+Other
+
+Catgories:
+Bourbon
+  -Bourbon
+  -Straight
+  -blended
+  -Wheated
+  -High Rye
+Rye
+  -Rye
+  -Straight
+Scotch
+  -Single Malt
+  -Single Grain
+  -Blended Malt
+  -Blended Grain
+  -Blended
+Irish
+  -Single Malt
+  -Single Grain
+  -Single Pot Still
+  -Blended
+Japanese
+Canadian
+American
+  -Single Malt
+  -Wheat
+  -Corn
+
+
+id: 1,
+name: Brand: Offering,
+category: { 
+  general: not null,
+  sub: not null },
+region: not null,
+distillery: name | n/a,
+age: number,
+noAge: bool
+abv: number,
+proof: number,
+caskstrength: bool
+
