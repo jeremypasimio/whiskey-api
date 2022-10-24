@@ -1,42 +1,38 @@
-module.exports.getByProof = (req, res, whiskeys) => {
-  const { comp, proof } = req.params;
-  console.log('comp op ', comp);
+module.exports.getByProof = (req, res, db) => {
+  const comp = req.params.comp;
+  const proof = parseFloat(req.params.proof);
 
-  let results;
+  let queryOp;
 
   switch (comp) {
     case 'e':
-      results = whiskeys.filter((w) => {
-        return ~~w.proof === ~~proof;
-      });
+      queryOp = '=';
       break;
     case 'gt':
-      results = whiskeys.filter((w) => {
-        return ~~w.proof > ~~proof;
-      });
+      queryOp = '>';
       break;
     case 'gte':
-      results = whiskeys.filter((w) => {
-        return ~~w.proof >= ~~proof;
-      });
+      queryOp = '>=';
       break;
     case 'lt':
-      results = whiskeys.filter((w) => {
-        return ~~w.proof < ~~proof;
-      });
+      queryOp = '<';
       break;
     case 'lte':
-      results = whiskeys.filter((w) => {
-        return ~~w.proof <= ~~proof;
-      });
+      queryOp = '<=';
       break;
     default:
       console.log('No results');
   }
 
-  if (results) {
-    res.json(results);
-  } else {
-    res.json('No results found');
-  }
+  db.select('*')
+    .from('whiskey')
+    .where('proof', queryOp, proof)
+    .then((result) => {
+      if (result.length === 0) {
+        res.status(400).json('No Results');
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    });
 };

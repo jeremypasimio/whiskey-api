@@ -11,6 +11,8 @@ Lowland
 Other
 
 Catgories:
+General
+  -Sub
 Bourbon
   -Bourbon
   -Straight
@@ -37,18 +39,22 @@ American
   -Single Malt
   -Wheat
   -Corn
+Other
+  -Indian
+  -French
+  -Welsh
+  -Flavored
 
 
-id: 1,
-name: Brand: Offering,
-category: { 
-  general: not null,
-  sub: not null },
-region: not null,
-distillery: name | n/a,
-age: number,
+id: serial,
+name: varchar(150) not null,
+distillery: varchar(150) | null,
+genCat: varchar(150) not null,
+subCat: varchar(150) not null ,
+region: varchar(150) not null,
+age: smallint | null,
 noAge: bool
-abv: number,
-proof: number,
+abv: decimal not null,
+proof: smallint not null,
 caskstrength: bool
 

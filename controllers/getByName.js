@@ -1,14 +1,20 @@
-module.exports.getByName = (req, res, whiskeys) => {
-  console.log('method reached');
+module.exports.getByName = (req, res, db) => {
   const { name } = req.params;
   console.log(name);
 
-  const result = whiskeys.filter((w) => {
-    if (w.name.toLowerCase() === name.toLowerCase()) {
-      console.log(w);
-      return w;
-    }
-  });
-
-  res.json(result);
+  db.select('*')
+    .from('whiskey')
+    .where('name', '=', name)
+    .then((result) => {
+      if (result.length === 0) {
+        res.status(400).json('Could not find whiskey');
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json('Could not find whiskey');
+    });
 };

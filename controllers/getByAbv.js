@@ -1,42 +1,38 @@
 module.exports.getByAbv = (req, res, whiskeys) => {
-  const { comp, abv } = req.params;
-  console.log('comp op ', comp);
+  const comp = req.params.comp;
+  const abv = parseFloat(req.params.abv);
 
-  let results;
+  let queryOp;
 
   switch (comp) {
     case 'e':
-      results = whiskeys.filter((w) => {
-        return ~~w.abv === ~~abv;
-      });
+      queryOp = '=';
       break;
     case 'gt':
-      results = whiskeys.filter((w) => {
-        return ~~w.abv > ~~abv;
-      });
+      queryOp = '>';
       break;
     case 'gte':
-      results = whiskeys.filter((w) => {
-        return ~~w.abv >= ~~abv;
-      });
+      queryOp = '>=';
       break;
     case 'lt':
-      results = whiskeys.filter((w) => {
-        return ~~w.abv < ~~abv;
-      });
+      queryOp = '<';
       break;
     case 'lte':
-      results = whiskeys.filter((w) => {
-        return ~~w.abv <= ~~abv;
-      });
+      queryOp = '<=';
       break;
     default:
       console.log('No results');
   }
 
-  if (results) {
-    res.json(results);
-  } else {
-    res.json('No results found');
-  }
+  db.select('*')
+    .from('whiskey')
+    .where('abv', queryOp, abv)
+    .then((result) => {
+      if (result.length === 0) {
+        res.status(400).json('No Results');
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    });
 };

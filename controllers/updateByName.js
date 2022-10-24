@@ -1,53 +1,49 @@
-//Implement update database entry after database setup
-module.exports.updateByName = (req, res, whiskeys) => {
+module.exports.updateByName = (req, res, db) => {
   const {
     name,
-    general,
-    sub,
-    region,
     distillery,
+    gencat,
+    subcat,
+    region,
     age,
+    noage,
     abv,
     proof,
     caskstrength,
   } = req.body;
 
   const searchName = req.params.name;
-  console.log('name ', name);
 
-  let whiskeyToUpdate = whiskeys.filter((w) => {
-    return w.name.toLowerCase() === searchName.toLowerCase();
-  });
+  db('whiskey')
+    .where({ name: searchName })
+    .then(() => {
+      let updatedWhiskey = {
+        name: name.toLowerCase(),
+        distillery: distillery.toLowerCase(),
+        gencat: gencat.toLowerCase(),
+        subcat: subcat.toLowerCase(),
+        region: region.toLowerCase(),
+        age: age,
+        noage: noage,
+        abv: abv,
+        proof: proof,
+        caskstrength: caskstrength,
+      };
 
-  if (name) {
-    whiskeyToUpdate[0].name = name;
-  }
-  if (general) {
-    whiskeyToUpdate[0].category.general = general;
-  }
-  if (sub) {
-    whiskeyToUpdate[0].category.sub = sub;
-  }
-  if (region) {
-    whiskeyToUpdate[0].region = region;
-  }
-  if (distillery) {
-    whiskeyToUpdate[0].distillery = distillery;
-  }
-  if (age) {
-    whiskeyToUpdate.age = age;
-  }
-  if (abv) {
-    whiskeyToUpdate[0].abv = abv;
-  }
-  if (proof) {
-    whiskeyToUpdate[0].proof = proof;
-  }
-  if (caskstrength) {
-    whiskeyToUpdate[0].caskstrength = caskstrength;
-  }
-
-  console.log(whiskeyToUpdate);
-
-  res.json('updating');
+      db('whiskey')
+        .where({ name: searchName })
+        .update(updatedWhiskey, ['name'])
+        .then((result) => {
+          console.log(result);
+          res.json(result);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json('Error Updating');
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json('Could not find whiskey');
+    });
 };

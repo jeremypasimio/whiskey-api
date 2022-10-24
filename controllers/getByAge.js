@@ -1,41 +1,38 @@
-module.exports.getByAge = (req, res, whiskeys) => {
-  const { comp, age } = req.params;
+module.exports.getByAge = (req, res, db) => {
+  const comp = req.params.comp;
+  const age = parseInt(req.params.age);
 
-  let results;
+  let queryOp;
 
   switch (comp) {
     case 'e':
-      results = whiskeys.filter((w) => {
-        return ~~w.age === ~~age;
-      });
+      queryOp = '=';
       break;
     case 'gt':
-      results = whiskeys.filter((w) => {
-        return ~~w.age > ~~age;
-      });
+      queryOp = '>';
       break;
     case 'gte':
-      results = whiskeys.filter((w) => {
-        return ~~w.age >= ~~age;
-      });
+      queryOp = '>=';
       break;
     case 'lt':
-      results = whiskeys.filter((w) => {
-        return ~~w.age < ~~age;
-      });
+      queryOp = '<';
       break;
     case 'lte':
-      results = whiskeys.filter((w) => {
-        return ~~w.age <= ~~age;
-      });
+      queryOp = '<=';
       break;
     default:
       console.log('No results');
   }
 
-  if (results) {
-    res.json(results);
-  } else {
-    res.json('No results found');
-  }
+  db.select('*')
+    .from('whiskey')
+    .where('age', queryOp, age)
+    .then((result) => {
+      if (result.length === 0) {
+        res.status(400).json('No Results');
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    });
 };
